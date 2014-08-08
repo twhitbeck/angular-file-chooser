@@ -5,12 +5,13 @@
     return {
       restrict: 'A',
       link: function twFileChooserPostLink(scope, el, attrs) {
+        var input = el[0];
+
         // Preconditions
         if (element.nodeName.toLowerCase() !== 'input' || !attrs.type || attrs.type.toLowerCase() !== 'file' || !attrs.twFileChooser) {
           return;
         }
 
-        var input = el[0];
         var current = el;
 
         scope.choose = function choose() {
