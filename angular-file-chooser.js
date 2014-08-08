@@ -1,44 +1,50 @@
 (function() {
   'use strict';
 
-  angular.module('tw.directives.fileChooser', []).directive('twFileChooser', ['$compile', '$document', '$http', '$templateCache', '$window', function($compile, $document, $http, $templateCache, $window) {
+  angular.module('tw.directives.fileChooser', []).directive('twFileChooser', ['$compile', '$document', '$http', '$templateCache', '$window', '$q', function($compile, $document, $http, $templateCache, $window, $q) {
     return {
       restrict: 'A',
-      link: function twFileChooserPostLink(scope, el, attrs) {
-        var input = el[0];
+      compile: function twFileChooserCompile(tEl, tAttrs) {
+        tEl.addClass('ng-hide');
 
-        // Preconditions
-        if (input.nodeName.toLowerCase() !== 'input' || !attrs.type || attrs.type.toLowerCase() !== 'file' || !attrs.twFileChooser) {
-          return;
-        }
+        return function twFileChooserPostLink(scope, el, attrs) {
+          var input = el[0];
 
-        var current = el;
-
-        scope.choose = function choose() {
-          input.dispatchEvent(new $window.MouseEvent('click'));
-        };
-
-        scope.$watch(attrs.twFileChooser, function(newVal, oldVal) {
-          if (!newVal) {
-            if (oldVal) {
-              // Reset
-              current.replaceWith(el);
-              current = el;
-            }
-
+          // Preconditions
+          if (input.nodeName.toLowerCase() !== 'input' || !attrs.type || attrs.type.toLowerCase() !== 'file' || !attrs.twFileChooser) {
             return;
           }
 
-          $http.get(newVal, {cache: $templateCache}).then(function(response) {
-            var newElement = $compile(response.data)(scope);
-            current.replaceWith(newElement);
-            current = newElement;
-          }, function(response) {
-            // TODO: log error
-            current.replaceWith(el);
-            current = el;
+          scope.choose = function choose() {
+            input.dispatchEvent(new $window.MouseEvent('click'));
+          };
+
+          var current, deferred = $q.defer();
+          scope.$watch(attrs.twFileChooser, function(newVal, oldVal) {
+            deferred.resolve();
+            deferred = $q.defer();
+
+            if (!newVal) {
+              if (oldVal) {
+                // Reset
+                current && current.remove();
+                current = null;
+              }
+
+              return;
+            }
+
+            $http.get(newVal, {cache: $templateCache, timeout: deferred.promise}).then(function(response) {
+              current && current.remove();
+              current = $compile(response.data)(scope);
+              el.after(current);
+            }, function(response) {
+              // TODO: log error
+              current && current.remove();
+              current = null;
+            });
           });
-        });
+        };
       }
     };
   }]);
