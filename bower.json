@@ -1,0 +1,25 @@
+{
+  "name": "angular-file-chooser",
+  "version": "0.0.1",
+  "homepage": "https://github.com/twhitbeck/angular-file-chooser",
+  "authors": [
+    "Tim Whitbeck <twhitbeck@gmail.com>"
+  ],
+  "description": "Simple angular directive to replace file input with customer html",
+  "main": "angular-file-chooser.js",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "directive",
+    "file",
+    "input"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
