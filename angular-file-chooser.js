@@ -8,7 +8,7 @@
         var input = el[0];
 
         // Preconditions
-        if (element.nodeName.toLowerCase() !== 'input' || !attrs.type || attrs.type.toLowerCase() !== 'file' || !attrs.twFileChooser) {
+        if (input.nodeName.toLowerCase() !== 'input' || !attrs.type || attrs.type.toLowerCase() !== 'file' || !attrs.twFileChooser) {
           return;
         }
 
